@@ -1,6 +1,6 @@
 FROM openjdk:11
 
-COPY ./kafka /opt/kafka
+COPY kafka /opt/kafka
 
 ENTRYPOINT ["/opt/kafka/bin/zookeeper-server-start.sh", "/opt/kafka/config/zookeeper.properties"]
 
