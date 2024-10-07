@@ -1,0 +1,6 @@
+FROM openjdk:11
+
+COPY ./kafka /opt/kafka
+
+CMD ["/opt/kafka/bin/kafka-server-start.sh", "/opt/kafka/config/server.properties"]
+
