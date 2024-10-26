@@ -1,0 +1,74 @@
+services:
+  kraft1:
+    image: hw2/kafka-controller:v1
+    container_name: kraft1
+    hostname: kraft1
+    environment:
+        - KAFKA_CLUSTER_ID=${KAFKA_CLUSTER_ID}
+        - NODE_ID=1
+        - LOG_DIRS=/opt/kafka/data/
+        - QUORUM_VOTERS=1@kraft1:9093,2@kraft2:9093,3@kraft3:9093
+        - OFFSETS_REPLICATION_FACTOR=3
+    ports:
+        - "19093:9093"
+    networks:
+        - kraft-net
+  kraft2:
+    image: hw2/kafka-controller:v1
+    container_name: kraft2
+    hostname: kraft2
+    environment:
+        - KAFKA_CLUSTER_ID=${KAFKA_CLUSTER_ID}
+        - NODE_ID=2
+        - LOG_DIRS=/opt/kafka/data/
+        - QUORUM_VOTERS=1@kraft1:9093,2@kraft2:9093,3@kraft3:9093
+        - OFFSETS_REPLICATION_FACTOR=3
+    ports:
+        - "29093:9093"
+    networks:
+        - kraft-net
+  kraft3:
+    image: hw2/kafka-controller:v1
+    container_name: kraft3
+    hostname: kraft3
+    environment:
+        - KAFKA_CLUSTER_ID=${KAFKA_CLUSTER_ID}
+        - NODE_ID=3
+        - LOG_DIRS=/opt/kafka/data/
+        - QUORUM_VOTERS=1@kraft1:9093,2@kraft2:9093,3@kraft3:9093
+        - OFFSETS_REPLICATION_FACTOR=3
+    ports:
+        - "39093:9093"
+    networks:
+        - kraft-net
+  broker1:
+    image: hw2/kafka-broker:v1
+    container_name: broker1
+    hostname: broker1
+    environment:
+        - NODE_ID=4
+        - LOG_DIRS=/opt/kafka/data/
+        - QUORUM_VOTERS=1@kraft1:9093,2@kraft2:9093,3@kraft3:9093
+        - KAFKA_CLUSTER_ID=${KAFKA_CLUSTER_ID}
+    ports:
+        - "19092:9092"
+    networks:
+        - kraft-net
+    depends_on:
+        - kraft1
+        - kraft2
+        - kraft3
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: hoster
+    networks:
+        - kraft-net
+    volumes:
+        - /var/run/docker.sock:/tmp/docker.sock
+        - /etc/hosts:/tmp/hosts
+
+networks:
+  kraft-net:
+    name: kfrat-net
+    driver: bridge
+

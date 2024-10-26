@@ -24,10 +24,10 @@
 process.roles=controller
 
 # The node id associated with this instance's roles
-node.id=1
+node.id=${NODE_ID}
 
 # The connect string for the controller quorum
-controller.quorum.voters=1@kraft1:9093,2@kraft2:9093,3@kraft3:9093
+controller.quorum.voters=${QUORUM_VOTERS}
 
 ############################# Socket Server Settings #############################
 
@@ -65,7 +65,7 @@ socket.request.max.bytes=104857600
 ############################# Log Basics #############################
 
 # A comma separated list of directories under which to store log files
-log.dirs=log.dirs=/opt/kafka/data/
+log.dirs=${LOG_DIRS}
 
 # The default number of log partitions per topic. More partitions allow greater
 # parallelism for consumption, but this will also result in more files across
@@ -79,7 +79,7 @@ num.recovery.threads.per.data.dir=1
 ############################# Internal Topic Settings  #############################
 # The replication factor for the group metadata internal topics "__consumer_offsets" and "__transaction_state"
 # For anything other than development testing, a value greater than 1 is recommended to ensure availability such as 3.
-offsets.topic.replication.factor=1
+offsets.topic.replication.factor=${OFFSETS_REPLICATION_FACTOR}
 transaction.state.log.replication.factor=1
 transaction.state.log.min.isr=1
 
