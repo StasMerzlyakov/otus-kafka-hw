@@ -6,8 +6,9 @@ if [[ ! -d "./kafka" ]]; then
 	tar xvfz kafka_2.12-3.8.0.tgz && mv ./kafka_2.12-3.8.0 ./kafka
 fi
 
+exit
+
 # build images
-docker build -t otus/zookeeper:v1 -f Dockerfile.zookeeper .
 docker build -t otus/kafka:v1 -f Dockerfile.kafka .
 
 
