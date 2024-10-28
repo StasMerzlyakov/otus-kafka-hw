@@ -11,6 +11,7 @@ if [[ ! -d "./kafka" ]]; then
 fi
 popd
 
+docker-compose rm -fsv
 docker build -t hw2/kafka-controller:v1 -f Dockerfile.controller .
 docker build -t hw2/kafka-broker:v1 -f Dockerfile.broker .
 

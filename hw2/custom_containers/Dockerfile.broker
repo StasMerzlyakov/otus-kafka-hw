@@ -6,6 +6,8 @@ COPY broker.properties.template /opt/kafka/config/kraft/broker.properties.templa
 
 COPY broker.endpoint.sh /endpoint.sh
 
+COPY kafka_server_jaas.conf /opt/kafka/private/kafka_server_jaas.conf
+
 ENV NODE_ID=1
 ENV QUORUM_VOTERS=1@localhost:9093
 ENV LOG_DIRS=/tmp/kraft-controller-logs
