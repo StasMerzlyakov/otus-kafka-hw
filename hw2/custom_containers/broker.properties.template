@@ -129,17 +129,25 @@ log.segment.bytes=1073741824
 log.retention.check.interval.ms=300000
 
 
-# SASL
-authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
-
+# SASL authentification
 sasl.enabled.mechanisms=PLAIN
-super.users=User:admin
+sasl.mechanism=PLAIN
 
-# listener.name.<name> .. == listeners=<NAME>...
-#listener.name.client.plain.sasl.jass.config=\
+# authorization
+authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
+#super.users=User:admin;User:bob;User:alice;User:tom;
+super.users=User:admin;
+allow.everyone.if.no.acl.found=false
+
+
+# listener.name.{listenerName}.{saslMechanism}.sasl.jaas.config.
+#listener.name.client.sasl_plainetxt.sasl.jass.config=\
 #    org.apache.kafka.common.security.plain.PlainLoginModule required \
 #        username="admin" password="adminpass" \
-#        user_admin="adminpass";
-
+#        user_admin="adminpass" \
+#        user_alice="alicepass" \
+#        user_bob="bobpass" \
+#        user_tom="tompass";
+#
 
 

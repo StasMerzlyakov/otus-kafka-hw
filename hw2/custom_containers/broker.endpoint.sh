@@ -17,5 +17,6 @@ cat /opt/kafka/config/kraft/broker.properties.template | envsubst > /opt/kafka/c
 
 /opt/kafka/bin/kafka-storage.sh format -t $KAFKA_CLUSTER_ID -c /opt/kafka/config/kraft/broker.properties
 
-KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/private/kafka_broker_jaas.conf" /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/broker.properties
+#KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/private/kafka_broker_jaas.conf -Dlog4j.configuration=file:/log4j.properties" /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/broker.properties
 
+KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/private/kafka_broker_jaas.conf" /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/broker.properties

@@ -92,7 +92,7 @@ services:
         - kraft1
         - kraft2
         - kraft3
-
+ 
   # вспомагательный сервис для доступа к контейнерам по иманам контейнеров
   hoster:
     image: dvdarias/docker-hoster
