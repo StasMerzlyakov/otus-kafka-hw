@@ -37,21 +37,21 @@ controller.quorum.voters=${QUORUM_VOTERS}
 #     listeners = listener_name://host_name:port
 #   EXAMPLE:
 #     listeners = PLAINTEXT://your.host.name:9092
-#listeners=PLAINTEXT://:9092
+listeners=SASL_PLAINTEXT://:9092
 
 # Name of listener used for communication between brokers.
-inter.broker.listener.name=PLAINTEXT
+inter.broker.listener.name=SASL_PLAINTEXT
 
 # Listener name, hostname and port the broker will advertise to clients.
 # If not set, it uses the value for "listeners".
-#advertised.listeners=PLAINTEXT://:9092
+advertised.listeners=SASL_PLAINTEXT://broker${NODE_ID}:9092
 
 # A comma-separated list of the names of the listeners used by the controller.
 # This is required if running in KRaft mode. On a node with `process.roles=broker`, only the first listed listener will be used by the broker.
 controller.listener.names=CONTROLLER
 
 # Maps listener names to security protocols, the default is for them to be the same. See the config documentation for more details
-listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL
+listener.security.protocol.map=CONTROLLER:SASL_PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL
 
 # The number of threads that the server uses for receiving requests from the network and sending responses to the network
 num.network.threads=3
@@ -127,3 +127,47 @@ log.segment.bytes=1073741824
 # The interval at which log segments are checked to see if they can be deleted according
 # to the retention policies
 log.retention.check.interval.ms=300000
+
+
+# SASL/PLAIN
+#security.protocol=SASL_PLAIN
+#security.inter.broker.protocol=SASL_PLAINTEXT
+
+
+sasl.mechanism=PLAIN
+security.protocol=SASL_PLAIN
+#sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required \   
+#    username="admin" \   
+#    password="admin-secret"; 
+
+
+
+sasl.enabled.mechanisms=PLAIN
+sasl.mechanism.inter.broker.protocol=PLAIN
+sasl.mechanisms.controller.protocol=PLAIN
+
+# Authorization
+authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
+
+# controller communication
+# listener.name.<name>. ... == controller.listener.names=<NAME>
+#listener.name.controller.plain.sasl.jaas.config=\
+#    org.apache.kafka.common.security.plain.PlainLoginModule required \
+#        username="admin" \
+#        password="admin-secret" \
+#        user_admin="admin-secret";
+
+# broker communication
+# lister.name.<name>. ... == inter.broker.listener.name.<NAME>
+#listener.name.sasl_plaintext.plain.sasl.jaas.config=\
+#    org.apache.kafka.common.security.plain.PlainLoginModule required \
+#        username="admin" \
+#        password="admin-secret" \
+#        user_admin="admin-secret";
+
+
+
+
+# 
+allow.everyone.if.no.acl.found=false
+super.users=User:admin

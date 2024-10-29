@@ -7,6 +7,6 @@ export KAFKA_CLUSTER_ID="$(build/kafka/bin/kafka-storage.sh random-uuid)"
 
 docker-compose up
 
-#docker-compose rm -fsv
+docker-compose rm -fsv
 
 
