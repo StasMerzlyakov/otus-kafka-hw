@@ -4,6 +4,8 @@ COPY build/kafka /opt/kafka
 
 COPY controller.properties.template /opt/kafka/config/kraft/controller.properties.template
 
+COPY kafka_controller_jaas.conf.template /opt/kafka/config/kraft/kafka_controller_jaas.conf.template
+
 COPY controller.endpoint.sh /endpoint.sh
 
 ENV NODE_ID=1
