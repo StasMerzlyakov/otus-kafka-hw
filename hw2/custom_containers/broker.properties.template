@@ -37,21 +37,21 @@ controller.quorum.voters=${QUORUM_VOTERS}
 #     listeners = listener_name://host_name:port
 #   EXAMPLE:
 #     listeners = PLAINTEXT://your.host.name:9092
-listeners=PLAINTEXT://:9092,BROKER://:9093
+listeners=CLIENT://:9092,BROKER://:9093
 
 # Name of listener used for communication between brokers.
 inter.broker.listener.name=BROKER
 
 # Listener name, hostname and port the broker will advertise to clients.
 # If not set, it uses the value for "listeners".
-advertised.listeners=PLAINTEXT://broker${NODE_ID}:9092,BROKER://broker${NODE_ID}:9093
+advertised.listeners=CLIENT://broker${NODE_ID}:9092,BROKER://broker${NODE_ID}:9093
 
 # A comma-separated list of the names of the listeners used by the controller.
 # This is required if running in KRaft mode. On a node with `process.roles=broker`, only the first listed listener will be used by the broker.
 controller.listener.names=CONTROLLER
 
 # Maps listener names to security protocols, the default is for them to be the same. See the config documentation for more details
-listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL,BROKER:PLAINTEXT
+listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL,BROKER:PLAINTEXT,CLIENT:SASL_PLAINTEXT
 
 # The number of threads that the server uses for receiving requests from the network and sending responses to the network
 num.network.threads=3
@@ -127,3 +127,19 @@ log.segment.bytes=1073741824
 # The interval at which log segments are checked to see if they can be deleted according
 # to the retention policies
 log.retention.check.interval.ms=300000
+
+
+# SASL
+authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
+
+sasl.enabled.mechanisms=PLAIN
+super.users=User:admin
+
+# listener.name.<name> .. == listeners=<NAME>...
+#listener.name.client.plain.sasl.jass.config=\
+#    org.apache.kafka.common.security.plain.PlainLoginModule required \
+#        username="admin" password="adminpass" \
+#        user_admin="adminpass";
+
+
+

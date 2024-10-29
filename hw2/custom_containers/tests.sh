@@ -31,10 +31,10 @@
 echo ">> Создаем topic test"
 read -p "Press enter to continue"
 
-#KAFKA_OPTS="-Djava.security.auth.login.config=./admin-jaas.conf" build/kafka/bin/kafka-topics.sh --create --topic test \
-#	--bootstrap-server broker11:9092 --command-config client_plaintext.properties 
+KAFKA_OPTS="-Djava.security.auth.login.config=./admin-jaas.conf" build/kafka/bin/kafka-topics.sh --create --topic test \
+	--bootstrap-server broker11:9092 --command-config client_plaintext.properties 
 
-build/kafka/bin/kafka-topics.sh --create --topic test --bootstrap-server broker11:9092
+#build/kafka/bin/kafka-topics.sh --create --topic test --bootstrap-server broker11:9092
 
 
 #echo ">> Даем права на запись для Alice и права на чтение для Bob"
