@@ -51,7 +51,7 @@ advertised.listeners=CLIENT://broker${NODE_ID}:9092,BROKER://broker${NODE_ID}:90
 controller.listener.names=CONTROLLER
 
 # Maps listener names to security protocols, the default is for them to be the same. See the config documentation for more details
-listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL,BROKER:PLAINTEXT,CLIENT:SASL_PLAINTEXT
+listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL,BROKER:SASL_PLAINTEXT,CLIENT:SASL_PLAINTEXT
 
 # The number of threads that the server uses for receiving requests from the network and sending responses to the network
 num.network.threads=3
@@ -131,7 +131,7 @@ log.retention.check.interval.ms=300000
 
 # SASL authentification
 sasl.enabled.mechanisms=PLAIN
-sasl.mechanism=PLAIN
+sasl.mechanism.inter.broker.protocol=PLAIN
 
 # authorization
 authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
@@ -140,14 +140,13 @@ super.users=User:admin;
 allow.everyone.if.no.acl.found=false
 
 
-# listener.name.{listenerName}.{saslMechanism}.sasl.jaas.config.
-#listener.name.client.sasl_plainetxt.sasl.jass.config=\
-#    org.apache.kafka.common.security.plain.PlainLoginModule required \
+# not working - TODO 
+# by docs: listener.name.{listenerName}.{saslMechanism}.sasl.jaas.config.
+#
+#listener.name.CLIENT.PLAIN.sasl.jass.config=org.apache.kafka.common.security.plain.PlainLoginModule required \
 #        username="admin" password="adminpass" \
 #        user_admin="adminpass" \
 #        user_alice="alicepass" \
 #        user_bob="bobpass" \
 #        user_tom="tompass";
 #
-
-
