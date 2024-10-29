@@ -58,40 +58,40 @@ services:
         - kraft1
         - kraft2
         - kraft3
-          #  broker12:
-          #    image: hw2/kafka-broker:v1
-          #    container_name: broker12
-          #    hostname: broker12
-          #    environment:
-          #        - NODE_ID=12
-          #        - LOG_DIRS=/opt/kafka/data/
-          #        - QUORUM_VOTERS=1@kraft1:9093,2@kraft2:9093,3@kraft3:9093
-          #        - KAFKA_CLUSTER_ID=${KAFKA_CLUSTER_ID}
-          #    ports:
-          #        - "29092:9092"
-          #    networks:
-          #        - kraft-net
-          #    depends_on:
-          #        - kraft1
-          #        - kraft2
-          #        - kraft3
-          #  broker13:
-          #    image: hw2/kafka-broker:v1
-          #    container_name: broker13
-          #    hostname: broker13
-          #    environment:
-          #        - NODE_ID=13
-          #        - LOG_DIRS=/opt/kafka/data/
-          #        - QUORUM_VOTERS=1@kraft1:9093,2@kraft2:9093,3@kraft3:9093
-          #        - KAFKA_CLUSTER_ID=${KAFKA_CLUSTER_ID}
-          #    ports:
-          #        - "39092:9092"
-          #    networks:
-          #        - kraft-net
-          #    depends_on:
-          #        - kraft1
-          #        - kraft2
-          #        - kraft3
+  broker12:
+    image: hw2/kafka-broker:v1
+    container_name: broker12
+    hostname: broker12
+    environment:
+        - NODE_ID=12
+        - LOG_DIRS=/opt/kafka/data/
+        - QUORUM_VOTERS=1@kraft1:9093,2@kraft2:9093,3@kraft3:9093
+        - KAFKA_CLUSTER_ID=${KAFKA_CLUSTER_ID}
+    ports:
+        - "29092:9092"
+    networks:
+        - kraft-net
+    depends_on:
+        - kraft1
+        - kraft2
+        - kraft3
+  broker13:
+    image: hw2/kafka-broker:v1
+    container_name: broker13
+    hostname: broker13
+    environment:
+        - NODE_ID=13
+        - LOG_DIRS=/opt/kafka/data/
+        - QUORUM_VOTERS=1@kraft1:9093,2@kraft2:9093,3@kraft3:9093
+        - KAFKA_CLUSTER_ID=${KAFKA_CLUSTER_ID}
+    ports:
+        - "39092:9092"
+    networks:
+        - kraft-net
+    depends_on:
+        - kraft1
+        - kraft2
+        - kraft3
 
   # вспомагательный сервис для доступа к контейнерам по иманам контейнеров
   hoster:

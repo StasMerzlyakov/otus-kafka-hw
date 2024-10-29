@@ -37,21 +37,21 @@ controller.quorum.voters=${QUORUM_VOTERS}
 #     listeners = listener_name://host_name:port
 #   EXAMPLE:
 #     listeners = PLAINTEXT://your.host.name:9092
-#listeners=PLAINTEXT://:9092
+listeners=PLAINTEXT://:9092,BROKER://:9093
 
 # Name of listener used for communication between brokers.
-inter.broker.listener.name=PLAINTEXT
+inter.broker.listener.name=BROKER
 
 # Listener name, hostname and port the broker will advertise to clients.
 # If not set, it uses the value for "listeners".
-#advertised.listeners=PLAINTEXT://:9092
+advertised.listeners=PLAINTEXT://broker${NODE_ID}:9092,BROKER://broker${NODE_ID}:9093
 
 # A comma-separated list of the names of the listeners used by the controller.
 # This is required if running in KRaft mode. On a node with `process.roles=broker`, only the first listed listener will be used by the broker.
 controller.listener.names=CONTROLLER
 
 # Maps listener names to security protocols, the default is for them to be the same. See the config documentation for more details
-listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL
+listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL,BROKER:PLAINTEXT
 
 # The number of threads that the server uses for receiving requests from the network and sending responses to the network
 num.network.threads=3
