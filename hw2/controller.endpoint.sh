@@ -16,6 +16,6 @@ cat /opt/kafka/config/kraft/controller.properties.template | envsubst > /opt/kaf
 
 cat /opt/kafka/config/kraft/kafka_controller_jaas.conf.template | envsubst > /opt/kafka/config/kraft/kafka_controller_jaas.conf
 
-KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/config/kraft/kafka_controller_jaas.conf" /opt/kafka/bin/kafka-storage.sh format -t $KAFKA_CLUSTER_ID -c /opt/kafka/config/kraft/controller.properties
+/opt/kafka/bin/kafka-storage.sh format -t $KAFKA_CLUSTER_ID -c /opt/kafka/config/kraft/controller.properties
 
 KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/config/kraft/kafka_controller_jaas.conf" /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/controller.properties
