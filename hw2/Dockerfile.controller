@@ -1,0 +1,26 @@
+FROM openjdk:11
+
+COPY build/kafka /opt/kafka
+
+COPY controller.properties.template /opt/kafka/config/kraft/controller.properties.template
+
+COPY kafka_controller_jaas.conf.template /opt/kafka/config/kraft/kafka_controller_jaas.conf.template
+
+COPY controller.endpoint.sh /endpoint.sh
+
+ENV NODE_ID=1
+ENV QUORUM_VOTERS=1@localhost:9093
+ENV LOG_DIRS=/tmp/kraft-controller-logs
+ENV OFFSETS_REPLICATION_FACTOR=1
+
+
+RUN apt-get update
+RUN apt-get install -y gettext-base
+
+RUN apt-get clean autoclean
+RUN apt-get autoremove --yes
+
+RUN chmod +x /endpoint.sh
+
+ENTRYPOINT ["/endpoint.sh"]
+

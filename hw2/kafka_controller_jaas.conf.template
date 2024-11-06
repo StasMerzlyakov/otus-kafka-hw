@@ -1,0 +1,12 @@
+KafkaServer {
+   org.apache.kafka.common.security.plain.PlainLoginModule required
+   serviceName="kraft${NODE_ID}"
+   username="admin"
+   password="adminpass"
+   user_admin="adminpass"
+   user_alice="alicepass"
+   user_bob="bobpass"
+   user_tom="tompass";
+};
+
+

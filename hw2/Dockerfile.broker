@@ -1,0 +1,28 @@
+FROM openjdk:11
+
+COPY build/kafka /opt/kafka
+
+COPY broker.properties.template /opt/kafka/config/kraft/broker.properties.template
+
+COPY broker.endpoint.sh /endpoint.sh
+
+COPY log4j.properties /log4j.properties
+
+COPY kafka_broker_jaas.conf /opt/kafka/private/kafka_broker_jaas.conf
+
+ENV NODE_ID=1
+ENV QUORUM_VOTERS=1@localhost:9093
+ENV LOG_DIRS=/tmp/kraft-controller-logs
+
+
+RUN apt-get update
+RUN apt-get install -y gettext-base
+
+RUN apt-get clean autoclean
+RUN apt-get autoremove --yes
+
+RUN chmod +x /endpoint.sh
+
+
+CMD ["/endpoint.sh"]
+
