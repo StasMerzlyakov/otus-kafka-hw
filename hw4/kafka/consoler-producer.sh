@@ -1,5 +1,9 @@
 #!/bin/bash
 
-docker exec -it kafka bash -c "seq 42 | kafka-console-producer --broker-list localhost:9092 --topic event && echo 'Produced 42 messages.'"
+for i in `seq 42`; do
+    echo "send $i"	
+    docker exec -it kafka bash -c "echo \"$i:msg\" | kafka-console-producer --broker-list localhost:9092 --topic events --property \"parse.key=true\" --property \"key.separator=:\""
+done
+
 
 echo "write success"
