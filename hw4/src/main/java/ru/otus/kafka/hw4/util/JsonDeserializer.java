@@ -1,4 +1,4 @@
-package ru.otus.kafka.hw4;
+package ru.otus.kafka.hw4.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.header.Headers;
@@ -22,16 +22,16 @@ public class JsonDeserializer<T> implements Deserializer<T> {
 
     @Override
     public T deserialize(String topic, byte[] data) {
-        return null;
-    }
-
-    @Override
-    public T deserialize(String topic, Headers headers, byte[] data) {
         try {
             return objectMapper.readValue(data, deserializedClass);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public T deserialize(String topic, Headers headers, byte[] data) {
+        return deserialize(topic, data);
     }
 
     @Override

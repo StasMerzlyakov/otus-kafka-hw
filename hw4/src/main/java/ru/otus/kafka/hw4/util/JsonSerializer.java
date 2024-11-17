@@ -1,4 +1,4 @@
-package ru.otus.kafka.hw4;
+package ru.otus.kafka.hw4.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

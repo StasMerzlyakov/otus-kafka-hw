@@ -1,4 +1,4 @@
-package ru.otus.kafka.hw4;
+package ru.otus.kafka.hw4.util;
 
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClientConfig;
@@ -9,7 +9,6 @@ import org.apache.kafka.clients.admin.NewTopic;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class AdminUtils {
