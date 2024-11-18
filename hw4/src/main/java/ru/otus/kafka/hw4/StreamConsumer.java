@@ -60,7 +60,6 @@ public class StreamConsumer {
                 .groupByKey(Grouped.with(stringSerde, compoundEventSerge))
                 .windowedBy(window)
                 .reduce(CompoundEvent::merge, Materialized.as("stock-group"))
-                //.count(Materialized.with(stringSerde, new Serdes.LongSerde()))
                 .toStream()
                 .map((w, compoundEvent) ->
                         KeyValue.pair(w.key(), compoundEvent))
@@ -73,13 +72,13 @@ public class StreamConsumer {
 
         Properties streamProps = new Properties();
         streamProps.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP);
-        streamProps.put(StreamsConfig.APPLICATION_ID_CONFIG, "hw4" + UUID.randomUUID());
+        streamProps.put(StreamsConfig.APPLICATION_ID_CONFIG, "hw4");//UUID.randomUUID());
         streamProps.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE_V2);
         streamProps.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.StringSerde.class); // **
         streamProps.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.StringSerde.class);
         streamProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
-       /* try (var kafkaStreams = new KafkaStreams(builder.build(), streamProps)) {
+        try (var kafkaStreams = new KafkaStreams(builder.build(), streamProps)) {
             kafkaStreams.setUncaughtExceptionHandler(th -> {
                 th.printStackTrace();
                 return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_APPLICATION;
@@ -88,32 +87,6 @@ public class StreamConsumer {
             while (!Thread.interrupted()) {
                 Thread.sleep(2000);
             }
-        } */
-
-        final CountDownLatch latch = new CountDownLatch(1);
-
-        var kafkaStreams = new KafkaStreams(builder.build(), streamProps);
-        kafkaStreams.setUncaughtExceptionHandler(th -> {
-            th.printStackTrace();
-            return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_APPLICATION;
-        });
-
-        // attach shutdown handler to catch control-c
-        Runtime.getRuntime().addShutdownHook(new Thread("streams-shutdown-hook") {
-            @Override
-            public void run() {
-                kafkaStreams.close();
-                latch.countDown();
-            }
-        });
-
-        try {
-            kafkaStreams.start();
-            latch.await();
-        } catch (Throwable e) {
-            System.exit(1);
         }
-        System.exit(0);
-
     }
 }
