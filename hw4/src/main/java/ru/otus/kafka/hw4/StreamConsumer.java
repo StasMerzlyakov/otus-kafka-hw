@@ -78,15 +78,23 @@ public class StreamConsumer {
         streamProps.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.StringSerde.class);
         streamProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
+
+        final CountDownLatch latch = new CountDownLatch(1);
+        Runtime.getRuntime().addShutdownHook(new Thread("streams-shutdown-hook") {
+            @Override
+            public void run() {
+                latch.countDown();
+                logger.info("shutdown");
+            }
+        });
+
         try (var kafkaStreams = new KafkaStreams(builder.build(), streamProps)) {
             kafkaStreams.setUncaughtExceptionHandler(th -> {
                 th.printStackTrace();
                 return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_APPLICATION;
             });
             kafkaStreams.start();
-            while (!Thread.interrupted()) {
-                Thread.sleep(2000);
-            }
+            latch.await();
         }
     }
 }
