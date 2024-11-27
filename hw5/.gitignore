@@ -1,0 +1,13 @@
+*.init
+.gradle
+build
+*.swp
+*.idea
+*_.sh
+*__.sh
+*___.sh
+*.iml
+out
+/.nb-gradle/
+*.jar
+target
