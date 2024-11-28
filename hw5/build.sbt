@@ -22,6 +22,7 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-generic",
   "io.circe" %% "circe-parser"
 ).map(_ % circeVersion)
+
 libraryDependencies += "io.circe" %% "circe-derivation" % "0.13.0-M5"
 
 libraryDependencies += "org.http4s" %% "http4s-circe" % "0.23.14"
@@ -58,5 +59,12 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-stream-kafka" % "4.0.2",
   "com.typesafe.akka" %% "akka-stream" % akkaVersion
 )
+libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5"
 libraryDependencies += "dev.zio" %% "zio-kafka"         % "2.3.1"
 libraryDependencies += "dev.zio" %% "zio-kafka-testkit" % "2.3.1" % Test
+
+assemblyMergeStrategy in assembly := {
+  case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+  case PathList("reference.conf") => MergeStrategy.concat
+  case x => MergeStrategy.first
+}
