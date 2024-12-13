@@ -1,0 +1,8 @@
+FROM openjdk:11
+
+
+COPY kafka /opt/kafka
+COPY docker/connect-distributed.properties /opt/kafka/config
+
+ENTRYPOINT ["/opt/kafka/bin/connect-distributed.sh",  "/opt/kafka/config/connect-distributed.properties"]
+
