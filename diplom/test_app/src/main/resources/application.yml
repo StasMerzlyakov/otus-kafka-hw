@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    test-while-idle: true
+    validation-query: SELECT 1;
+    url: jdbc:postgresql://localhost:5432/kafka-camunda
+  flyway:
+    enabled: true
+    validate-on-migrate: true
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  listener:
+      ack-mode: RECORD
+      topic-name: event_topic
