@@ -4,6 +4,7 @@ import java.time.OffsetDateTime
 import java.util.UUID
 
 data class AppEvent(
-    val timestamp: OffsetDateTime,
     val processId: UUID,
+    val eventTime: OffsetDateTime,
+    val endpoint: String,
 )

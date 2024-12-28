@@ -1,7 +1,7 @@
 CREATE TABLE db_events(
     event_time TIMESTAMP WITH TIME ZONE NOT NULL,
     process_id TEXT NOT NULL,
-    result_code TEXT default null,
+    result_code TEXT NOT NULL,
     __deleted TEXT DEFAULT NULL
 );
 
@@ -15,6 +15,7 @@ SELECT create_hypertable(
 CREATE TABLE app_events(
     event_time TIMESTAMP WITH TIME ZONE NOT NULL,
     process_id TEXT NOT NULL,
+    endpoint   TEXT NOT NULL,
     __deleted TEXT DEFAULT NULL
 );
 

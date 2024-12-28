@@ -2,11 +2,9 @@ package ru.otus.kafka.diplom.testapp.rest
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
-import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
@@ -38,10 +36,19 @@ class StartController {
     @Autowired
     private lateinit var appEventService: AppEventService
 
-    private var job : Job? = null
+    private val entryPointList = listOf(
+        "browsedrive.gov/accept",
+        "skiptube.gov",
+        "vitz.mil:8074",
+        "teklist.net/do/hello",
+        "linktype.com:12345",
+        "cogilith.info/receive",
+    )
+
+    private var job: Job? = null
 
     @Operation(summary = "start process")
-    @RequestMapping(method = [RequestMethod.POST], value = ["/start"],)
+    @RequestMapping(method = [RequestMethod.POST], value = ["/start"])
     suspend fun start(
         @Parameter(
             name = "delay",
@@ -59,7 +66,14 @@ class StartController {
                 while (isRunning.get()) {
                     async {
                         val processId = UUID.randomUUID()
-                        appEventService.addEvent(AppEvent(OffsetDateTime.now(), processId))
+
+                        appEventService.addEvent(
+                            AppEvent(
+                                processId = processId,
+                                eventTime = OffsetDateTime.now(),
+                                endpoint = entryPointList[Random.nextInt(entryPointList.size)],
+                            ),
+                        )
 
                         // задержка от 500 млс + до 1500 млс
                         delay(500 + Random.nextLong(1000))
@@ -69,7 +83,13 @@ class StartController {
                             1 -> ResultCode.INTERNAL_SERVER_ERROR
                             else -> ResultCode.OK
                         }
-                        dbEventService.addEvent(DbEvent(OffsetDateTime.now(), processId, resultCode))
+                        dbEventService.addEvent(
+                            DbEvent(
+                                processId = processId,
+                                eventTime = OffsetDateTime.now(),
+                                resultCode = resultCode,
+                            ),
+                        )
                     }
                     delay(delayMls)
                 }
@@ -82,7 +102,7 @@ class StartController {
     }
 
     @Operation(summary = "stop process")
-    @RequestMapping(method = [RequestMethod.POST], value = ["/stop"],)
+    @RequestMapping(method = [RequestMethod.POST], value = ["/stop"])
     suspend fun stop() {
         logger.info("stop events creation invoked")
         doEvents.set(false)
