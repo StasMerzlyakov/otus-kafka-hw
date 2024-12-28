@@ -1,0 +1,21 @@
+FROM openjdk:11
+
+
+COPY build/kafka /opt/kafka
+COPY connect-distributed.properties.template /opt/kafka/config/connect-distributed.properties.template
+
+COPY connect.endpoint.sh /endpoint.sh
+
+COPY connect /opt/connect
+
+RUN apt-get update
+RUN apt-get install -y gettext-base
+
+RUN apt-get clean autoclean
+RUN apt-get autoremove --yes
+
+RUN chmod +x /endpoint.sh
+
+
+CMD ["/endpoint.sh"]
+

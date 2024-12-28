@@ -1,0 +1,16 @@
+FROM openjdk:11
+
+COPY build/kafka /opt/kafka
+COPY server.properties.template /opt/kafka/config/kraft/server.properties.template
+
+COPY broker.endpoint.sh /endpoint.sh
+
+RUN apt-get update
+RUN apt-get install -y gettext-base
+
+RUN apt-get clean autoclean
+RUN apt-get autoremove --yes
+
+RUN chmod +x /endpoint.sh
+
+CMD ["/endpoint.sh"]

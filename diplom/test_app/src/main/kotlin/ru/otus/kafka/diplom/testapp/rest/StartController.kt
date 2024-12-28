@@ -1,14 +1,18 @@
-package ru.otus.kafka.diplom.testapp
+package ru.otus.kafka.diplom.testapp.rest
 
-import kotlinx.coroutines.CoroutineDispatcher
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import ru.otus.kafka.diplom.testapp.db.DbEventService
@@ -22,11 +26,11 @@ import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.random.Random
 
 @RestController
-class Controller(ioDispatcher: CoroutineDispatcher = Dispatchers.IO) {
+class StartController {
     private val doEvents = AtomicBoolean(false)
     private val isRunning = AtomicBoolean(false)
 
-    private val logger = LoggerFactory.getLogger(Controller::class.java)
+    private val logger = LoggerFactory.getLogger(StartController::class.java)
 
     @Autowired
     private lateinit var dbEventService: DbEventService
@@ -34,16 +38,26 @@ class Controller(ioDispatcher: CoroutineDispatcher = Dispatchers.IO) {
     @Autowired
     private lateinit var appEventService: AppEventService
 
-    @PostMapping("/start")
-    suspend fun start(
-        @RequestParam("delay", defaultValue = "1000")
-        delayMls: Long
-    ) {
-        if (isRunning.compareAndSet(false, true)) {
+    private var job : Job? = null
 
-            GlobalScope.launch(start = CoroutineStart.LAZY) {
+    @Operation(summary = "start process")
+    @RequestMapping(method = [RequestMethod.POST], value = ["/start"],)
+    suspend fun start(
+        @Parameter(
+            name = "delay",
+            description = "delay between processes",
+            required = false,
+            example = "1000",
+        )
+        @RequestParam("delay", defaultValue = "1000")
+        delayMls: Long,
+    ) {
+        logger.info("start events creation invoked")
+        if (isRunning.compareAndSet(false, true)) {
+            logger.info("starting process")
+            job = GlobalScope.launch {
                 while (isRunning.get()) {
-                    launch(start = CoroutineStart.LAZY) {
+                    async {
                         val processId = UUID.randomUUID()
                         appEventService.addEvent(AppEvent(OffsetDateTime.now(), processId))
 
@@ -60,16 +74,19 @@ class Controller(ioDispatcher: CoroutineDispatcher = Dispatchers.IO) {
                     delay(delayMls)
                 }
             }
+
             logger.info("events creation started")
         } else {
             logger.info("events creation already in process")
         }
-
     }
 
-    @PostMapping("/start")
+    @Operation(summary = "stop process")
+    @RequestMapping(method = [RequestMethod.POST], value = ["/stop"],)
     suspend fun stop() {
+        logger.info("stop events creation invoked")
         doEvents.set(false)
+        job?.join()
+        job = null
     }
-
 }

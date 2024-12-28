@@ -12,7 +12,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.core.ProducerFactory
 import ru.otus.kafka.diplom.testapp.domain.AppEvent
-
+import ru.otus.kafka.diplom.testapp.rest.StartController
 
 @Configuration
 class Configuration {
@@ -34,10 +34,8 @@ class Configuration {
             DefaultKafkaProducerFactory(it)
         }
 
-
     @Bean
     fun kafkaTemplate(): KafkaTemplate<String?, AppEvent> {
         return KafkaTemplate(producerFactory())
     }
-
 }

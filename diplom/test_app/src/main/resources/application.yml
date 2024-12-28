@@ -1,4 +1,9 @@
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
 spring:
+  port: 8080
+  contextPath: /
   datasource:
     test-while-idle: true
     validation-query: SELECT 1;
@@ -6,12 +11,9 @@ spring:
   flyway:
     enabled: true
     validate-on-migrate: true
+    baselineOnMigrate: true
   kafka:
     producer:
       bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-
-  listener:
-      ack-mode: RECORD
-      topic-name: event_topic

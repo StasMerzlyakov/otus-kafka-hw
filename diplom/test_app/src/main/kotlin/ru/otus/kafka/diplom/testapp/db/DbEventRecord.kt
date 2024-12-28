@@ -1,7 +1,6 @@
 package ru.otus.kafka.diplom.testapp.db
 
 import ru.otus.kafka.diplom.testapp.domain.DbEvent
-import ru.otus.kafka.diplom.testapp.domain.ResultCode
 import java.time.OffsetDateTime
 import java.util.UUID
 import javax.persistence.Entity
@@ -15,7 +14,7 @@ data class DbEventRecord(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    val timestamp: OffsetDateTime,
+    val eventTime: OffsetDateTime,
 
     val processId: UUID,
 
@@ -24,9 +23,9 @@ data class DbEventRecord(
     companion object {
         fun fromDbEvent(dbEvent: DbEvent): DbEventRecord {
             return DbEventRecord(
-                timestamp = dbEvent.timestamp,
+                eventTime = dbEvent.eventTime,
                 processId = dbEvent.processId,
-                resultCode = dbEvent.resultCode.code
+                resultCode = dbEvent.resultCode.code,
             )
         }
     }

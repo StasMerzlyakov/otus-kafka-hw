@@ -4,7 +4,7 @@ import java.time.OffsetDateTime
 import java.util.UUID
 
 data class DbEvent(
-    val timestamp: OffsetDateTime,
+    val eventTime: OffsetDateTime,
     val processId: UUID,
     val resultCode: ResultCode,
 )
