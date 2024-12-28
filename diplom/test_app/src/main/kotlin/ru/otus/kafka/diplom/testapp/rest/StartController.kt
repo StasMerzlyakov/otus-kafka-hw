@@ -26,7 +26,6 @@ import kotlin.random.Random
 @RestController
 class StartController {
     private val doEvents = AtomicBoolean(false)
-    private val isRunning = AtomicBoolean(false)
 
     private val logger = LoggerFactory.getLogger(StartController::class.java)
 
@@ -60,10 +59,10 @@ class StartController {
         delayMls: Long,
     ) {
         logger.info("start events creation invoked")
-        if (isRunning.compareAndSet(false, true)) {
+        if (doEvents.compareAndSet(false, true)) {
             logger.info("starting process")
             job = GlobalScope.launch {
-                while (isRunning.get()) {
+                while (doEvents.get()) {
                     async {
                         val processId = UUID.randomUUID()
 

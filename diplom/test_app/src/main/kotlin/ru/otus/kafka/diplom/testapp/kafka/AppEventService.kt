@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Controller
 import ru.otus.kafka.diplom.testapp.domain.AppEvent
+import java.util.UUID
 
 @Controller
 class AppEventService(private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) {
@@ -19,10 +20,10 @@ class AppEventService(private val ioDispatcher: CoroutineDispatcher = Dispatcher
     private val logger = LoggerFactory.getLogger(AppEventService::class.java)
 
     @Autowired
-    private lateinit var template: KafkaTemplate<String?, AppEvent>
+    private lateinit var template: KafkaTemplate<UUID, AppEvent>
 
     suspend fun addEvent(appEvent: AppEvent) = withContext(ioDispatcher) {
-        template.send(topic, appEvent).completable().thenAccept {
+        template.send(topic, appEvent.processId, appEvent).completable().thenAccept {
             logger.info("send $appEvent success")
         }
         return@withContext
