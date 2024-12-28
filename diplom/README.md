@@ -12,29 +12,26 @@
 [Kafka Connect Deep Dive – Converters and Serialization Explained](https://www.confluent.io/blog/kafka-connect-deep-dive-converters-serialization-explained/#json-schemas)
 
 ```
+key.converter=org.apache.kafka.connect.storage.StringConverter
+
 key.converter.schemas.enable=false
 value.converter.schemas.enable=false
 ```
 
 ##### настройки event-connector
 
-Трансформации ("transforms": "unwrap,changeTopicName,payload"):
+Добился того, что в топиках kafka_events и db_events данные выглядят одинаково.
+
+Трансформации ("transforms": "unwrap,changeTopicName,createKey,extractProcessId,insertTypeIdHeader,replaceField"):
 - unwrap (io.debezium.transforms.ExtractNewRecordState) - преобразование формата debezium в json со схемой
 - changeTopicName (org.apache.kafka.connect.transforms.RegexRouter) позволяет изменить имя топика (можно написать регулярку от названия таблицы)
-- payload - извлекаем из json только поле payload
+- createKey (org.apache.kafka.connect.transforms.ValueToKey) - извлекаем из json только (в виде {process_id:"uuid"})
+- extractProcessId (org.apache.kafka.connect.transforms.ExtractField$Key) оставляю только uuid 
+- insertTypeIdHeader(org.apache.kafka.connect.transforms.InsertHeader) - доп.поле
+- replaceField (org.apache.kafka.connect.transforms.ReplaceField$Valu) - удаляю лишнее
 
-```
-"transforms": "unwrap,changeTopicName,payload",
 
-"transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
-"transforms.unwrap.drop.tombstones": "false",
-"transforms.unwrap.delete.handling.mode": "rewrite",
-"transforms.changeTopicName.type": "org.apache.kafka.connect.transforms.RegexRouter",
-"transforms.changeTopicName.regex": "(.*)",
-"transforms.changeTopicName.replacement": "db_events",
-"transforms.payload.type": "org.apache.kafka.connect.transforms.ExtractField$Value",
-"transforms.payload.type": "payload",
-```
+
 ```bash
 pushd kafka-connect
 
