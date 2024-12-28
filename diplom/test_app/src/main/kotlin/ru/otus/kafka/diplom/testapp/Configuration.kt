@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.kafka.core.DefaultKafkaProducerFactory
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.core.ProducerFactory
-import ru.otus.kafka.diplom.testapp.domain.AppEvent
+import ru.otus.kafka.diplom.testapp.domain.KafkaEvent
 import java.util.UUID
 
 @Configuration
@@ -28,14 +28,14 @@ class Configuration {
     }
 
     @Bean
-    fun producerFactory(): ProducerFactory<UUID, AppEvent> =
+    fun producerFactory(): ProducerFactory<UUID, KafkaEvent> =
         kafkaProperties.buildProducerProperties().let {
             it[ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG] = true
             DefaultKafkaProducerFactory(it)
         }
 
     @Bean
-    fun kafkaTemplate(): KafkaTemplate<UUID, AppEvent> {
+    fun kafkaTemplate(): KafkaTemplate<UUID, KafkaEvent> {
         return KafkaTemplate(producerFactory())
     }
 }

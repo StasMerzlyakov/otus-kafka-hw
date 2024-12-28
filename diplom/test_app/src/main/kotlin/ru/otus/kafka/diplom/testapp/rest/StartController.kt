@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import ru.otus.kafka.diplom.testapp.db.DbEventService
-import ru.otus.kafka.diplom.testapp.domain.AppEvent
+import ru.otus.kafka.diplom.testapp.domain.KafkaEvent
 import ru.otus.kafka.diplom.testapp.domain.DbEvent
 import ru.otus.kafka.diplom.testapp.domain.ResultCode
-import ru.otus.kafka.diplom.testapp.kafka.AppEventService
+import ru.otus.kafka.diplom.testapp.kafka.KafkaEventService
 import java.time.OffsetDateTime
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicBoolean
@@ -33,7 +33,7 @@ class StartController {
     private lateinit var dbEventService: DbEventService
 
     @Autowired
-    private lateinit var appEventService: AppEventService
+    private lateinit var kafkaEventService: KafkaEventService
 
     private val entryPointList = listOf(
         "browsedrive.gov/accept",
@@ -66,8 +66,8 @@ class StartController {
                     async {
                         val processId = UUID.randomUUID()
 
-                        appEventService.addEvent(
-                            AppEvent(
+                        kafkaEventService.addEvent(
+                            KafkaEvent(
                                 processId = processId,
                                 eventTime = OffsetDateTime.now(),
                                 endpoint = entryPointList[Random.nextInt(entryPointList.size)],

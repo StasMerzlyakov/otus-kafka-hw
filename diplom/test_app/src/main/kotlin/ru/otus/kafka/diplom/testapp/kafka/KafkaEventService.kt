@@ -8,23 +8,23 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Controller
-import ru.otus.kafka.diplom.testapp.domain.AppEvent
+import ru.otus.kafka.diplom.testapp.domain.KafkaEvent
 import java.util.UUID
 
 @Controller
-class AppEventService(private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) {
+class KafkaEventService(private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) {
 
-    @Value("\${app_event.topic}")
+    @Value("\${kafka_event.topic}")
     private lateinit var topic: String
 
-    private val logger = LoggerFactory.getLogger(AppEventService::class.java)
+    private val logger = LoggerFactory.getLogger(KafkaEventService::class.java)
 
     @Autowired
-    private lateinit var template: KafkaTemplate<UUID, AppEvent>
+    private lateinit var template: KafkaTemplate<UUID, KafkaEvent>
 
-    suspend fun addEvent(appEvent: AppEvent) = withContext(ioDispatcher) {
-        template.send(topic, appEvent.processId, appEvent).completable().thenAccept {
-            logger.info("send $appEvent success")
+    suspend fun addEvent(kafkaEvent: KafkaEvent) = withContext(ioDispatcher) {
+        template.send(topic, kafkaEvent.processId, kafkaEvent).completable().thenAccept {
+            logger.info("send $kafkaEvent success")
         }
         return@withContext
     }
