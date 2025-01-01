@@ -1,88 +1,89 @@
 package akka.apps
 
 import akka.NotUsed
-import akka.stream.scaladsl.{GraphDSL, Sink, Source, ZipN}
-import akka.stream.{ClosedShape, Graph}
+import Utils.tsToString
+import akka.actor.typed.ActorSystem
+import akka.stream.scaladsl.{GraphDSL, RunnableGraph, Sink, Source, ZipN}
+import akka.stream.{ActorMaterializer, ClosedShape, Graph, Materializer}
+import org.slf4j.LoggerFactory
+import akka.stream.scaladsl.Source.tick
+
+import java.util.UUID
+import scala.concurrent.duration.DurationInt
+import scala.util.Random
 
 object MainApp {
-  /*implicit val system = ActorSystem("analyzer")
+  implicit val system = ActorSystem("analyzer")
   implicit val logger = LoggerFactory.getLogger(getClass)
 
   def errInfo(x: Any): Unit = logger.error("{}", x)
 
+  val tickerSource = Source
+    .tick(0.seconds, 1.second, "tick")
+    .map { _ =>
+      val now = System.currentTimeMillis()
+      TimedEvent(now)
+    }.statefulMapConcat { () =>
+      val generator = new CommandGenerator()
+      ev => generator.forEvent(ev)
+    }
+
+  val entryPointList = Array(
+    "browsedrive.gov/accept",
+    "skiptube.gov",
+    "vitz.mil:8074",
+    "teklist.net/do/hello",
+    "linktype.com:12345",
+    "cogilith.info/receive",
+  )
+
+  //Random.shuffle(entryPointList.toList).head
+
+  val eventSource =
+    tick(0.seconds, 500.milliseconds, "event")
+      .statefulMapConcat { () => {
+        _ =>
+          val now = System.currentTimeMillis()
+          val delay = Random.nextInt(8)
+          val url = Random.shuffle(entryPointList.toList).head
+          val rndInt = Random.nextInt(40)
+          val resultCode = rndInt match {
+            case 0 => ResultCode.BAD_REQUEST
+            case 1 => ResultCode.INTERNAL_SERVER_ERROR
+            case _ => ResultCode.OK
+          }
+
+          val processId = UUID.randomUUID()
+          val startEvent = Event1000(processId, now, url)
+          val endEvent = Event2000(processId, now + delay * 500, resultCode)
+          startEvent :: endEvent :: Nil
+      }
+      }
 
   val graph =
-    GraphDSL.create(){ implicit builder: GraphDSL.Builder[NotUsed] =>
-      import GraphDSL.Implicits._
-
-      val input = builder.add(KafkaSource.input)
-
-      val multiplier10 = builder.add(Flow[Int].map(x=>x*10))
-      val multiplier2 = builder.add(Flow[Int].map(x=>x*2))
-      val multiplier3 = builder.add(Flow[Int].map(x=>x*3))
-
-      val output = builder.add(Sink.foreach(errInfo))
-
-      val broadcast = builder.add(Broadcast[Int](3))
-
-      val zip = builder.add(ZipN[Int](3))
-
-      val appender = builder.add(Flow[Seq[Int]].map(x => x.sum))
-
-
-      //3
-      input ~> broadcast
-
-      broadcast.out(0) ~> multiplier10 ~> zip.in(0)
-      broadcast.out(1) ~> multiplier2 ~> zip.in(1)
-      broadcast.out(2) ~> multiplier3 ~> zip.in(2)
-
-      zip ~> appender.in
-
-      appender.out ~> output
-
-      //4
-      ClosedShape
-    } */
-
-  // Отделяем детали реализации DSL от реализации входных и выходных потоков
-  def createGraph(
-                   maxDelta: Long,
-                   dbInput1: Source[DBEvent, NotUsed],
-                   appInput: Source[AppEvent, NotUsed],
-                   successOutput: Sink[MergedEvent, NotUsed], // статус OK и delta < maxDelta
-                   tooLongOutput: Sink[MergedEvent, NotUsed], // статус OK и delta == null || delta > maxDelta
-                   badReqOutput: Sink[MergedEvent, NotUsed],  // статус BadRequest
-                   intErrOutput: Sink[MergedEvent, NotUsed],  // статус InternalServerError
-                 ): Graph[ClosedShape, NotUsed] = {
     GraphDSL.create() {
       implicit builder: GraphDSL.Builder[NotUsed] =>
+        import GraphDSL.Implicits._
 
-        val input1 = builder.add(dbInput1)
-        val input2 = builder.add(appInput)
+        val inputEvents = builder.add(eventSource)
+        val inputTicker = builder.add(tickerSource)
 
-        val zip = builder.add(ZipN[Int](3))
+        val eventCollector = builder.add(EventCollector)
+
+        val output = builder.add(Sink.foreach(errInfo))
 
 
-        val output1 = builder.add(successOutput)
-        val output2 = builder.add(tooLongOutput)
-        val output3 = builder.add(badReqOutput)
-        val output4 = builder.add(intErrOutput)
-
+        inputEvents ~> eventCollector
+        inputTicker ~> eventCollector
+        eventCollector ~> output
 
         ClosedShape
+
     }
-  }
 
 
-  /*def create[S <: Shape]()(buildBlock: GraphDSL.Builder[NotUsed] => S): Graph[S, NotUsed] = {
-    val builder = new GraphDSL.Builder
-    val s = buildBlock(builder)
-
-    createGraph(s, builder)
-  }
-*/
   def main(args: Array[String]): Unit = {
-    //  RunnableGraph.fromGraph(createGraph()).run()
+    RunnableGraph.fromGraph(graph).run()
   }
 }
+
