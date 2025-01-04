@@ -2,74 +2,68 @@ package akka.apps
 
 import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.Behaviors
+import akka.apps.CommandGenerator.{openWindows, watermark}
 import akka.stream.{Attributes, FlowShape, Inlet, Outlet}
 import akka.stream.scaladsl.Flow
 import akka.stream.stage.{GraphStage, GraphStageLogic, InHandler, OutHandler}
 
+import java.util.UUID
 import scala.collection.mutable
 
 
 sealed trait CommandDispatcher
-private case class Open(wc: OpenWindow) extends CommandDispatcher
-private case class Close(cw: CloseWindow, replyTo: WindowEvents) extends CommandDispatcher
 
-private case class Signal(event: Event) extends CommandDispatcher
+private case class Open(w: Window) extends CommandDispatcher
 
+private case class Close(w: Window) extends CommandDispatcher
 
-class TimedFlow extends GraphStage[FlowShape[(Event, WindowCommand), WindowEvents]] {
+private case class Signal1000(processId: UUID, eventTime: Long, endpoint: String) extends CommandDispatcher
 
-  val in: Inlet[(Event, WindowCommand)] = Inlet[(Event, WindowCommand)]("ZipperFlow.in")
-  private val out = Outlet[WindowEvents]("ZipperFlow.out")
-
-  override val shape: FlowShape[(Event, WindowCommand), WindowEvents] = FlowShape.of(in, out)
-
-  private val openWindows = mutable.Set[WindowEvents]()
-
-  override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) {
-    setHandler(in, new InHandler {
-      override def onPush(): Unit = {
-
-
-
-        push(out, DataOut("content-" + grab(in)._1.id))
-      }
-    })
-    setHandler(out, new OutHandler {
-      override def onPull(): Unit = {
-        pull(in)
-      }
-    })
-
-  }
-
-
-
-}
-
+private case class Signal2000(processId: UUID, eventTime: Long, status: ResultCode.Value) extends CommandDispatcher
 
 
 /**
- * Принимает на вход Event и WindowCommand. Добавляет Events к активным окнам.
+ * Добавляет Events к активным окнам.
+ * TODO добавить поправку на случай, когда результат (Signal2000) приходит после закрытия окна.
  */
 object EventCollector {
 
-  private val openWindows = mutable.Set[WindowEvents]()
+  private val openWindows = mutable.Set[EventChunk]()
 
-  def apply(): Behavior[CommandDispatcher] = Behaviors.setup{ ctx =>
-    Behaviors.receiveMessage {
-      case Open(ow) =>
-        openWindows.add(WindowEvents(ow.w, mutable.Set[Event]()))
-        Behaviors.same
-      case Close(cw, replyTo) =>
-        val we = openWindows.filter(we => we.w == cw.w).head
-        if (we !=null) {
-          openWindows.remove(we)
-          ctx.spawn(we, "WindowsEvent")
+  def forEvent(cd: CommandDispatcher): List[EventChunk] = {
+    cd match {
+      case Open(w) =>
+        openWindows.add(EventChunk(w, mutable.Map[UUID, (Event1000, Event2000)]()))
+        Nil
+      case Close(w) =>
+        val eventChunk = openWindows.flatMap { we =>
+          if (we.w == w) {
+            openWindows.remove(we)
+            Some(we)
+          } else Nil
         }
-        Behaviors.same
-      case Signal(event) =>
-        openWindows.foreach(ow => ow.event.add(event))
-        Behaviors.same
+        eventChunk.toList
+      case Signal1000(processId, eventTime, endpoint) =>
+        openWindows.foreach(ow =>
+          if (!ow.event.contains(processId)) {
+            ow.event.put(processId, (Event1000(processId, eventTime, endpoint), null))
+          } else {
+            // todo duplicate processing
+          })
+        Nil
+      case Signal2000(processId, eventTime, status) =>
+        openWindows.foreach(ow =>
+          if (ow.event.contains(processId)) {
+            val currentVal = ow.event(processId)
+            if (currentVal._2 == null) {
+              ow.event.put(processId, (currentVal._1, Event2000(processId, eventTime, status)))
+            } else {
+              // ignore duplicate
+            }
+          } else {
+            ow.event.put(processId, (null, Event2000(processId, eventTime, status)))
+          })
+        Nil
     }
   }
 }
