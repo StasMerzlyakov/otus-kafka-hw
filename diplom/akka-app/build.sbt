@@ -10,6 +10,7 @@ lazy val root = (project in file("."))
 
 lazy val akkaVersion = "2.7.0"
 lazy val jacksonVersion = "2.10.3"
+lazy val kafkaClientsVersion = "3.4.0"
 
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
@@ -26,7 +27,8 @@ libraryDependencies ++= Seq(
 
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-stream-kafka" % "4.0.2",
-  "com.typesafe.akka" %% "akka-stream" % akkaVersion
+  "com.typesafe.akka" %% "akka-stream" % akkaVersion,
+  "org.apache.kafka" % "kafka-clients" % kafkaClientsVersion
 )
 
 libraryDependencies ++= Seq(
@@ -34,6 +36,7 @@ libraryDependencies ++= Seq(
   "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % jacksonVersion,
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonVersion
 )
+
 
 javacOptions ++= Seq("-source", "11", "-target", "11")
 

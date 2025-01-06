@@ -28,7 +28,7 @@ object KafkaSource {
 
   val config = ConfigFactory.load()
   val consumerConfig = config.getConfig("akka.kafka.consumer")
-  val topicName = config.getString("akka.kafka.consumer.topic")
+  val topicName = config.getString("akka.kafka.consumer.input-topic")
 
 
   val objectMapper = new ObjectMapper()
