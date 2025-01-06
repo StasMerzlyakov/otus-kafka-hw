@@ -29,7 +29,7 @@ value.converter.schemas.enable=false
 - extractProcessId (org.apache.kafka.connect.transforms.ExtractField$Key) оставляю только uuid 
 - insertTypeIdHeader(org.apache.kafka.connect.transforms.InsertHeader) - доп.поле
 - replaceField (org.apache.kafka.connect.transforms.ReplaceField$Valu) - удаляю лишнее
-
+- insertEventType (org.apache.kafka.connect.transforms.InsertField$Value) - добавляю поле event_type
 
 
 ```bash
