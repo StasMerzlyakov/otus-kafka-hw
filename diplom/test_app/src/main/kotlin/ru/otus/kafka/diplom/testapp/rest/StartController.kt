@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import ru.otus.kafka.diplom.testapp.db.DbEventService
-import ru.otus.kafka.diplom.testapp.domain.KafkaEvent
 import ru.otus.kafka.diplom.testapp.domain.DbEvent
+import ru.otus.kafka.diplom.testapp.domain.EventType
+import ru.otus.kafka.diplom.testapp.domain.KafkaEvent
 import ru.otus.kafka.diplom.testapp.domain.ResultCode
 import ru.otus.kafka.diplom.testapp.kafka.KafkaEventService
 import java.time.OffsetDateTime
@@ -71,6 +72,7 @@ class StartController {
                                 processId = processId,
                                 eventTime = OffsetDateTime.now(),
                                 endpoint = entryPointList[Random.nextInt(entryPointList.size)],
+                                eventType = EventType.Event1000,
                             ),
                         )
 
