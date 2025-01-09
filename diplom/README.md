@@ -1,4 +1,4 @@
-# Прототип системы анализа данных на связке Kafka, Kafka-Connect, Akka? (Spark).
+# Прототип системы анализа данных на связке Kafka, Kafka-Connect, Akka.
 ## Некоторые особенности использования Kafka на Elbrus 8CB.
 
 
@@ -32,8 +32,12 @@ pushd environment
 ./init_cluster.sh
 ```
 
-### test_app
+#### Запись данных из kafka в PostgreSQL(jdbcSink)
+Использую JsonConverter, в топике уже лежат подготовленные данные (schema + payload)
 
+
+
+### test_app
 Spring-приложение, имитирующее работу какой-то системы из нескольких сервисов.
 Запускает процесс записи двух событий в kafka и, через некоторое время в БД.
 ```bash
@@ -52,7 +56,7 @@ curl -X POST localhost:8080/stop
 - вычисляет для каждого endpoint tps (30s / кол-во ответов)
 - вычисляет для каждого endopint avg (среднее время на выполнение одного запроса)
 - значение result_code пока игнорируется (TODO)
-- результаты приложение пишет в топик speed_topic
+- результаты приложение пишет в топик speed_topic (пишет сами данные + мета-информацию о схеме для работы JsonConverter)
 
 ```bash
 sbt assebly
@@ -64,11 +68,21 @@ java -jar target/scala-2.13/akka-assembly-0.1.jar
 Отвечает за перенос данных из топика speed_topic в таблицу PostgreSQL speed_result
 
 
+## Особенности Elbrus 8CB
+- работать надо с нормальной jdk, в настоящее время есть jdk11 от Unipro (в репе Alt нет - обращать внимание на mixed)
+- kafka при старте грузит нативную либу zstd (видимо нужна для сжатия); в Alt есть версия 1.5.5; kafka 3.7+ хочет 1.5.6 => kafka 3.6
+- kafka streams при использовании оконных операций под капотом использует rocksdb через librocksdbjni (https://github.com/fusesource/rocksdbjni); 
+сама по себе rocksdb в репе Alt есть, но нужно заморачиваться со сборкой librocksdbjni под E2K; это вполне реализуемо, но делать не хочется, если есть другие способы решения проблемы  => отпадают Apache Flink 
+
+
+
 ## TODO (на будущее)
 - akka clustering (с учетом распределения данных по партициям)
 - kafka stream clustering (партициирование + отказоустойчивость)
 - schema-registry
 - вместо akka попробовать аналитическую БД
+- вместо akka попробовать spark (запускал spark 3.5.0)
+- сборка librocksdbjni для E2K
 
 - ## Материалы
 - [Kafka Connect Deep Dive – Converters and Serialization Explained](https://www.confluent.io/blog/kafka-connect-deep-dive-converters-serialization-explained/#json-schemas)
@@ -78,4 +92,8 @@ java -jar target/scala-2.13/akka-assembly-0.1.jar
 - [Kafka Connect Schema.Type](https://kafka.apache.org/20/javadoc/org/apache/kafka/connect/data/Schema.Type.html)
 - [Kafka Connect JSON Schema Converter](https://www.confluent.io/hub/confluentinc/kafka-connect-json-schema-converter)
 - [Kafka with Schema Registry and Avro Serialization](https://howtodoinjava.com/kafka/kafka-with-avro-and-schema-registry/)
+
+
+
+
 
