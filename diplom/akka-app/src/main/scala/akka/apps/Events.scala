@@ -29,6 +29,7 @@ case class EventChunk(w: Window, event: mutable.Map[UUID, (Event1000, Event2000)
 
 case class TimedEvent(eventTime: Long)
 
+
 case class EndpointSpeed(endpoint: String,
                          tps: Double, // average speed (all requests per win duration)
                          avg: Double) // average single request duration

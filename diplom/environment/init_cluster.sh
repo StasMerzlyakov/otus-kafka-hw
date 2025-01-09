@@ -20,3 +20,7 @@ curl -X POST --data-binary "@kafka-connect/event-connector.json" -H "Content-Typ
 
 curl -X POST --data-binary "@kafka-connect/result-sink.json" -H "Content-Type: application/json" http://connect:8083/connectors | jq
 
+# schema-registry TODO
+# usefull https://jsontostring.com/
+# curl -X POST --data-binary "@schema-registry/result-schema.avsr" -H "Content-Type: application/vnd.schemaregistry.v1+json" http://schema-registry:8081/subjects/test | jq
+

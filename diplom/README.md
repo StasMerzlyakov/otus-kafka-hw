@@ -67,6 +67,7 @@ java -jar target/scala-2.13/akka-assembly-0.1.jar
 ## TODO (на будущее)
 - akka clustering (с учетом распределения данных по партициям)
 - kafka stream clustering (партициирование + отказоустойчивость)
+- schema-registry
 - вместо akka попробовать аналитическую БД
 
 - ## Материалы
@@ -74,5 +75,7 @@ java -jar target/scala-2.13/akka-assembly-0.1.jar
 - [Windowing using Akka Streams and Scala](https://dvirgiln.github.io/akka-streams-windowing/)
 - [Windowing data in Akka Streams](https://softwaremill.com/windowing-data-in-akka-streams/)
 - [Как синхронизировать сотни таблиц базы в Kafka, не написав ни одного продюсера](https://habr.com/ru/companies/deliveryclub/articles/529484/#9)
-- [https://www.confluent.io/hub/confluentinc/kafka-connect-json-schema-converter](https://www.confluent.io/hub/confluentinc/kafka-connect-json-schema-converter)
+- [Kafka Connect Schema.Type](https://kafka.apache.org/20/javadoc/org/apache/kafka/connect/data/Schema.Type.html)
+- [Kafka Connect JSON Schema Converter](https://www.confluent.io/hub/confluentinc/kafka-connect-json-schema-converter)
+- [Kafka with Schema Registry and Avro Serialization](https://howtodoinjava.com/kafka/kafka-with-avro-and-schema-registry/)
 
