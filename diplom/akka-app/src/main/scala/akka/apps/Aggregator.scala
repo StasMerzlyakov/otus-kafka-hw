@@ -1,13 +1,13 @@
 package akka.apps
 
-import org.slf4j.LoggerFactory
+import org.slf4j.{Logger, LoggerFactory}
 
 import java.time.Duration
 import scala.collection.mutable
 
 object Aggregator {
 
-  implicit val logger = LoggerFactory.getLogger(getClass)
+  implicit val logger: Logger = LoggerFactory.getLogger(getClass)
 
   def forEvent(ev: EventChunk): List[EndpointSpeed] = {
     val winSize = (ev.w.to - ev.w.from) / 1000 // per second

@@ -58,8 +58,6 @@ object MainApp {
   def main(args: Array[String]): Unit = {
 
     RunnableGraph.fromGraph(graph).run()
-
-
   }
 }
 

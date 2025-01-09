@@ -1,3 +1,4 @@
+import sbt.Keys.mainClass
 
 ThisBuild / version := "0.1"
 
@@ -5,8 +6,16 @@ ThisBuild / scalaVersion := "2.13.15"
 
 lazy val root = (project in file("."))
   .settings(
-    name := "akka"
+    name := "akka",
+    Compile / mainClass := Some("akka.apps.MainApp")
   )
+
+assemblyMergeStrategy in assembly := {
+  case PathList("META-INF", xs@_*) => MergeStrategy.discard
+  case PathList("reference.conf") => MergeStrategy.concat
+  case x => MergeStrategy.first
+}
+
 
 lazy val akkaVersion = "2.7.0"
 lazy val jacksonVersion = "2.10.3"
@@ -40,8 +49,3 @@ libraryDependencies ++= Seq(
 
 javacOptions ++= Seq("-source", "11", "-target", "11")
 
-assemblyMergeStrategy in assembly := {
-  case PathList("META-INF", xs@_*) => MergeStrategy.discard
-  case PathList("reference.conf") => MergeStrategy.concat
-  case x => MergeStrategy.first
-}
