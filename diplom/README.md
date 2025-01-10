@@ -69,7 +69,9 @@ java -jar target/scala-2.13/akka-assembly-0.1.jar
 
 
 ## Особенности Elbrus 8CB
-- работать надо с нормальной jdk, в настоящее время есть jdk11 от Unipro (в репе Alt нет - обращать внимание на mixed)
+- работать надо с нормальной jdk, в настоящее время есть jdk11 от Unipro (openjdk version "11.0.15-Unipro" 2022-04-19
+  OpenJDK Runtime Environment (build 11.0.15-Unipro+0-adhoc.root.openjdk11-11.0.15)
+  OpenJDK 64-Bit Server VM (RVM 4.2.1) (build 11.0.15-Unipro+0-adhoc.root.openjdk11-11.0.15, **mixed mode**)); в репе Alt нет - обращать внимание на mixed
 - kafka при старте грузит нативную либу zstd (видимо нужна для сжатия); в Alt есть версия 1.5.5; kafka 3.7+ хочет 1.5.6 => kafka 3.6
 - kafka streams при использовании оконных операций под капотом использует rocksdb через librocksdbjni (https://github.com/fusesource/rocksdbjni); 
 сама по себе rocksdb в репе Alt есть, но нужно заморачиваться со сборкой librocksdbjni под E2K; это вполне реализуемо, но делать не хочется, если есть другие способы решения проблемы  => отпадают Apache Flink 
@@ -92,8 +94,4 @@ java -jar target/scala-2.13/akka-assembly-0.1.jar
 - [Kafka Connect Schema.Type](https://kafka.apache.org/20/javadoc/org/apache/kafka/connect/data/Schema.Type.html)
 - [Kafka Connect JSON Schema Converter](https://www.confluent.io/hub/confluentinc/kafka-connect-json-schema-converter)
 - [Kafka with Schema Registry and Avro Serialization](https://howtodoinjava.com/kafka/kafka-with-avro-and-schema-registry/)
-
-
-
-
 

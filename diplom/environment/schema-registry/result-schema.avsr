@@ -1,3 +1,0 @@
-{
-  "schema":"{\"type\":\"record\",\"name\":\"speed_topic\",\"fields\":[{\"name\":\"endpoint\",\"type\":\"string\"},{\"name\":\"tps\",\"type\":\"double\"},{\"name\":\"avg\",\"type\":\"double\"}]}"
-}
