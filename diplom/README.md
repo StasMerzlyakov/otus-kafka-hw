@@ -68,6 +68,12 @@ java -jar target/scala-2.13/akka-assembly-0.1.jar
 Отвечает за перенос данных из топика speed_topic в таблицу PostgreSQL speed_result
 
 
+### environment
+Директория с окружением на docker
+
+### e2k-env
+Конфигурации для развертывания на Elbrus 8CB
+
 ## Особенности Elbrus 8CB
 - работать надо с нормальной jdk, в настоящее время есть jdk11 от Unipro (openjdk version "11.0.15-Unipro" 2022-04-19
   OpenJDK Runtime Environment (build 11.0.15-Unipro+0-adhoc.root.openjdk11-11.0.15)
