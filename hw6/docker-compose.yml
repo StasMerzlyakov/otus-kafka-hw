@@ -44,6 +44,26 @@ services:
     networks:
       - kafka-net
 
+  clickhouse:
+    image: clickhouse/clickhouse-server
+    container_name: clickhouse
+    hostname: clickhouse
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    networks:
+      - kafka-net
+    environment:
+      CLICKHOUSE_USER: username
+      CLICKHOUSE_PASSWORD: password
+    volumes:
+      - ./ch_data:/var/lib/clickhouse/
+      - ./ch_logs:/var/log/clickhouse-server/
+
   # вспомогательный сервис для доступа к контейнерам по иманам контейнеров
   hoster:
     image: dvdarias/docker-hoster

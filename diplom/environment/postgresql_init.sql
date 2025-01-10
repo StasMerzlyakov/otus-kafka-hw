@@ -1,0 +1,8 @@
+CREATE TABLE db_event_record (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    event_time TIMESTAMP WITH TIME ZONE NOT NULL,
+    process_id TEXT NOT NULL,
+    result_code TEXT NOT NULL
+);
+
+

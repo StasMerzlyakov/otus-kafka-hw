@@ -1,0 +1,62 @@
+services:
+  broker:
+    image: otus/broker:v1
+    container_name: broker
+    hostname: broker
+    environment:
+      - KAFKA_CLUSTER_ID=${KAFKA_CLUSTER_ID}
+    networks:
+      - monitoring-net
+  connect:
+    image: otus/connect:v1
+    container_name: connect
+    hostname: connect
+    environment:
+      KAFKA_BROKERCONNECT: "broker:9092"
+    networks:
+      - monitoring-net
+    depends_on:
+      - broker
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    container_name: kafdrop
+    hostname: kafdrop
+    environment:
+      KAFKA_BROKERCONNECT: "broker:9092"
+    networks:
+      - monitoring-net
+    depends_on:
+      - broker
+
+  postgres:
+    image: postgres:16.4
+    container_name: postgres
+    hostname: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=pgpass
+      - POSTGRES_DB=connect
+    volumes:
+      - ./postgresql_init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgres/custom-config.conf:/etc/postgresql/postgresql.conf
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    networks:
+      - monitoring-net
+
+  # вспомогательный сервис для доступа к контейнерам по иманам контейнеров
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: hoster
+    networks:
+      - monitoring-net
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts
+
+networks:
+  monitoring-net:
+    name: monitoring-net
+    driver: bridge
+

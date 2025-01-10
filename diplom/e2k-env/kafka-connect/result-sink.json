@@ -1,0 +1,20 @@
+{
+  "name": "result-sink",
+  "config": {
+    "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+    "connection.url": "jdbc:postgresql://postgres:5432/connect",
+    "connection.user": "postgres",
+    "connection.password": "pgpass",
+    "topics": "speed_topic",
+    "pk.mode": "record_value",
+    "pk.fields": "endpoint",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "auto.create": "false",
+    "auto.evolve": "false",
+    "insert.mode": "upsert",
+    "transforms": "route",
+    "transforms.route.type": "org.apache.kafka.connect.transforms.RegexRouter",
+    "transforms.route.regex": "(.*)",
+    "transforms.route.replacement": "speed_result"
+  }
+}

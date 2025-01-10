@@ -1,0 +1,17 @@
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+spring:
+  port: 8080
+  contextPath: /
+  datasource:
+    test-while-idle: true
+    validation-query: SELECT 1;
+    url: jdbc:postgresql://localhost:5432/kafka-camunda
+  flyway:
+    enabled: true
+    validate-on-migrate: true
+    baselineOnMigrate: true
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092

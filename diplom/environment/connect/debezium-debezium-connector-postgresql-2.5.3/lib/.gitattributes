@@ -1,0 +1,5 @@
+debezium-api-2.5.3.Final.jar filter=lfs diff=lfs merge=lfs -text
+debezium-connector-postgres-2.5.3.Final.jar filter=lfs diff=lfs merge=lfs -text
+debezium-core-2.5.3.Final.jar filter=lfs diff=lfs merge=lfs -text
+postgresql-42.6.1.jar filter=lfs diff=lfs merge=lfs -text
+protobuf-java-3.25.2.jar filter=lfs diff=lfs merge=lfs -text

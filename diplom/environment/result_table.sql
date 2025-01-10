@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS speed_result (
+    endpoint TEXT PRIMARY KEY,
+    tps DOUBLE PRECISION,
+    avg DOUBLE PRECISION
+)
+
+

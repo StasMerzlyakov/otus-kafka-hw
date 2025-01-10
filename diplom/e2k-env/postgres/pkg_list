@@ -1,0 +1,8 @@
+rpm -qa |grep postgr
+postgresql16-server-16.4-alt0.c10f2.2.e2kv5
+postgresql16-pg_checksums-1.1-alt2.e2kv5
+postgresql-common-1.0-alt8.noarch
+postgresql16-16.4-alt0.c10f2.2.e2kv5
+postgresql16-contrib-16.4-alt0.c10f2.2.e2kv5
+
+
