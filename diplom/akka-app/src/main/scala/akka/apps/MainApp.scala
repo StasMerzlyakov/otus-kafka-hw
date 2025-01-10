@@ -36,7 +36,6 @@ object MainApp {
     GraphDSL.create() { implicit builder: GraphDSL.Builder[NotUsed] =>
       import GraphDSL.Implicits._
 
-      // TODO - переделать на graph
       val source = KafkaSource.input.merge(windowsCommandSource).statefulMapConcat { () =>
         cd => EventCollector.forEvent(cd)
       }.statefulMapConcat(() =>

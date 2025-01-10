@@ -5,6 +5,7 @@ broker/bin/kafka-topics.sh --create --topic events_topic --partitions 4 --bootst
 
 
 # select pg_drop_replication_slot('debezium'); при необходимости
+# 
 
 curl -X POST --data-binary "@kafka-connect/event-connector.json" -H "Content-Type: application/json" http://connect:8083/connectors | jq
 curl -X POST --data-binary "@kafka-connect/result-sink.json" -H "Content-Type: application/json" http://connect:8083/connectors | jq
